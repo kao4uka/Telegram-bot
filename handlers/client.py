@@ -3,6 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from config import bot
 from keyboards.client_kb import start_markup
 
+
 # @dp.message_handler(commands=['start', 'help'])
 async def start_handler(message: types.Message):
     await bot.send_message(chat_id=message.from_user.id,
@@ -42,9 +43,15 @@ async def quiz_1(message: types.Message):
         reply_markup=markup
     )
 
+async def pin(message: types.Message):
+    if message.reply_to_message:
+        await bot.pin_chat_message(message.chat.id,  message.reply_to_message.message_id)
+    else:
+        await message.answer("Укажи кого закрепить!!!")
 
 
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(start_handler, commands=['start', 'help'])
     dp.register_message_handler(quiz_1, commands=['quiz'])
     dp.register_message_handler(info_handler, commands=['info'])
+    dp.register_message_handler(pin, commands=['pin'], commands_prefix="!")
