@@ -1,12 +1,17 @@
 from aiogram.utils import executor
 import logging
 from config import dp
-from handlers import client, callback, extra, admin
+from handlers import client, callback, extra, admin, fsm_admin_anketa
 
 client.register_handlers_client(dp)
 callback.register_handlers_callback(dp)
 admin.register_handlers_admin(dp)
+fsm_admin_anketa.register_handlers_admins(dp)
+
+
+
 extra.register_handlers_extra(dp)
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
