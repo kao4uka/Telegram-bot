@@ -1,23 +1,21 @@
 from aiogram import types, Dispatcher
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from config import bot, ADMINS
-from keyboards.client_kb import start_markup
 from database.bot_db import sql_command_random, sql_command_delete
+from keyboards.client_kb import start_markup
+from parsers.anime import parser
 
-# @dp.message_handler(commands=['start', 'help'])
+
 async def start_handler(message: types.Message):
     await bot.send_message(chat_id=message.from_user.id,
                            text=f"Привет, {message.from_user.first_name}",
                            reply_markup=start_markup)
-    # await message.answer("This is an answer method")
-    # await message.reply("This is a reply method")
 
 
 async def info_handler(message: types.Message):
     await message.answer("Сам разбирайся!")
 
 
-# @dp.message_handler(commands=['quiz'])
 async def quiz_1(message: types.Message):
     markup = InlineKeyboardMarkup()
     button_call_1 = InlineKeyboardButton("NEXT", callback_data='button_call_1')
@@ -52,8 +50,8 @@ async def get_random_user(message: types.Message):
                                  callback_data=f"delete {random_mentor[0]}"))
     await message.answer(
         random_mentor[0],
-        caption=f"Имя: {random_mentor[1]}\nВозраст: {random_mentor[2]}\n"
-                f"Направление: {random_mentor[3]}\nГруппа: {random_mentor[4]}",
+        f"Имя: {random_mentor[1]}\nВозраст: {random_mentor[2]}\n"
+        f"Направление: {random_mentor[3]}\nГруппа: {random_mentor[4]}",
         reply_markup=markup)
 
 async def pin(message: types.Message):
@@ -67,6 +65,19 @@ async def complete_delete(call: types.CallbackQuery):
     await call.answer(text="Deleted!", show_alert=True)
     await bot.delete_message(call.from_user.id, call.message.message_id)
 
+async def get_movie(message: types.Message):
+    movie = parser()
+    for i in movie:
+        await message.answer(
+            f"{i['link']}\n\n"
+            f"<b><a href='{i['link']}'>{i['title']}</a></b>\n"
+            f"{i['info']}\n",
+            parse_mode=ParseMode.HTML
+        )
+
+
+
+
 
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(start_handler, commands=['start', 'help'])
@@ -76,3 +87,4 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(get_random_user, commands=['get'])
     dp.register_callback_query_handler(complete_delete,
                                        lambda call: call.data and call.data.startswith("delete "))
+    dp.register_message_handler(get_movie, commands=['movie'])
