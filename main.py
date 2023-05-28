@@ -3,7 +3,9 @@ import logging
 from config import dp, bot, ADMINS
 from handlers import client, callback, extra, admin, fsm_admin_anketa, notification
 from database.bot_db import sql_create
+from audio_converter import video_to_audio
 import asyncio
+
 async def on_sturtup(_):
     asyncio.create_task(notification.scheduler())
     sql_create()
@@ -17,6 +19,7 @@ callback.register_handlers_callback(dp)
 admin.register_handlers_admin(dp)
 fsm_admin_anketa.register_handlers_admins(dp)
 notification.register_handlers_notification(dp)
+video_to_audio.register_handlers(dp)
 
 
 extra.register_handlers_extra(dp)

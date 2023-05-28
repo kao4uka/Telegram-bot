@@ -5,10 +5,12 @@ from aiogram.dispatcher import FSMContext
 from aiogram import types, Dispatcher
 from keyboards import client_kb
 from config import ADMINS
-import uuid
-
+import random
+def random_id():
+    numlst = [i for i in range(1, 10)]
+    random.shuffle(numlst)
+    return ''.join(list(map(str, numlst)))
 class FSMAdmin(StatesGroup):
-    id = State()
     name = State()
     age = State()
     direction = State()
@@ -23,9 +25,8 @@ async def fsm_start(message: types.Message):
 
 
 async def load_name(message: types.Message, state: FSMContext):
-    UID = uuid.uuid1()
     async with state.proxy() as data:
-        data['id'] = int(UID)
+        data['id'] = random_id()
         data['name'] = message.text
     await FSMAdmin.next()
     await message.answer("Cколько лет?")

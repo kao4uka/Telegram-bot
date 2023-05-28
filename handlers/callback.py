@@ -2,7 +2,7 @@ from aiogram import types, Dispatcher
 from config import bot
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-# @dp.callback_query_handler(text="button_call_1")
+
 async def quiz_2(call: types.CallbackQuery):
     markup = InlineKeyboardMarkup()
     button_call_2 = InlineKeyboardButton("NEXT", callback_data='button_call_2')
